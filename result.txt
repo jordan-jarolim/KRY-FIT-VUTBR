@@ -1,0 +1,2 @@
+usage: script.py [-h] key
+script.py: error: unrecognized arguments: 1

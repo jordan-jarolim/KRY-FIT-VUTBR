@@ -1,0 +1,11 @@
+1) xor bis.txt s bis.txt.enc -> vysledek
+2) xor vysledek s super_cipher.py.enc -> 1. pulka skriptu
+---
+3) xor super_cipher.py.enc s hint -> 2. pulka skriptu
+---
+4) 
+
+bis.txt.enc + hint -> NE
+hint + bis.txt.enc -> NE
+vysledek + hint -> NE
+hint + vysledek -> NE
