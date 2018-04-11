@@ -4,6 +4,8 @@ import argparse
 import sys
 import binascii
 import array
+import os
+
 
 # parser = argparse.ArgumentParser()
 # parser.add_argument("key")
@@ -21,12 +23,13 @@ cand_1 = [0x1, 0x2, 0x4, 0x6]
 
 # Next keystream
 def step(x):
-    print('vstup')
-    print(format(x, '032b'))
+    # print('step')
+    # print(x.bit_length())
+    # print(format(x, 'b'))
     x = (x & 1) << N + 1 | x << 1 | x >> N - 1
-    print('shift')
-    print(format(x, '032b'))
-
+    # print(x.bit_length())
+    # print(format(x, 'b'))
+    # print('----------------------------')
     y = 0
     for i in range(N):
         y |= SUB[(x >> i) & 7] << i
@@ -70,12 +73,28 @@ def compareLists(base_list, cand, i):
 
 # Choose best option to do shift
 def choose_best(base_list):
-    final = []
-    print('MASKED')
+    final = -1
     for option in base_list:
-        print(option.bit_length())
-        print(format(option & (3 << (option.bit_length() - 2)), 'b'))
-        print(format(option & 3, 'b'))
+        if (option & (3 << 256) == (option & 3) << 256):
+            final = option
+            break;
+    return final
+
+# Shift selected option (reverse to 1st step operation)
+def shift_chosen(chosen):
+    print(chosen.bit_length())
+    print(format(chosen, 'b'))
+    # if (length > 257):
+    #     length = 257
+    # chosen = (int(bin(chosen)[-257:], 2)) >> 1
+    chosen = chosen >> 1
+    if (chosen.bit_length() >= 257):
+        chosen = int(bin(chosen)[-256:], 2)
+    return chosen
+
+# Tranform int to string
+def int_to_string(shifted):
+    return int.to_bytes(shifted, 32, 'little').decode('utf-8')
 
 
 # Reverse ste function    
@@ -101,30 +120,62 @@ def reverseStep(y):
                     candidate_list = cand_0
                 base_list = compareLists(base_list, candidate_list, i)
             i += 1
-    print('OPTIONS')
-    for option in base_list:
-        print(format(option, 'b'))
-        print(option)
 
-    choose_best(base_list)
-    return base_list
+    chosen = choose_best(base_list)
+    shifted = shift_chosen(chosen)
+    # stringified = int_to_string(shifted)
+    return shifted
             
 
 
 print('step')
-original = step(int.from_bytes('KRY{qwertzuiopasdfghjklyxcvb}'.encode(),'little'));
+original = int.from_bytes('KRY{qwertzuiopasdfghjklyxcvb}'.encode(),'little')
+
+for i in range(N//2):
+    original = step(original)
+
+original = step(original)
+
 print('vysledek')
-print(format(original, '032b'))
+print(format(original, 'b'))
 print(original)
 
-print('vstup reversed')
-print(format(57896048210183943711694069256019884739780995237677627382219717421555487039481, '032b'))
-
-
 print('reversed')
+final = 53732762364271725616554037660579309881140189147263019822410701712482392295930
 
-final = reverseStep(57896048210183943711694069256019884739780995237677627382219717421555487039481)
-# print(final)
+for i in range(N//2):
+    final = reverseStep(final)
+
+final = reverseStep(final)
+
+print(int_to_string(final))
+
+
+# file = open(os.path.join('in/', "bis.txt"), "r")
+# original = file.read()
+# file.close()
+
+# file = open(os.path.join('in/', "bis.txt.enc"), "r")
+# enc = file.read()
+# file.close()
+
+# print(format(int.from_bytes(enc.encode(), 'little'), 'b'))
+
+# original = int.from_bytes(original.encode(), 'little')
+# print(format(original, 'b'))
+# enc = int.from_bytes(enc.encode(), 'little')
+
+# result = enc ^ original
+# print (format(result, 'b'))
+
+# for i in range(N//2):
+#     result = reverseStep(result)
+
+# result = reverseStep(result)
+# print(int_to_string(result))
+
+
+
 
 
 

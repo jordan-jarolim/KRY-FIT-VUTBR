@@ -29,7 +29,7 @@ for i in range(N//2):
 
 
 # Encrypt/decrypt stdin2stdout 
-plaintext = sys.stdin.buffer.read(N_B)
-keystr = step(keystr)
-print(binascii.hexlify((int.from_bytes(plaintext,'little') ^ keystr).to_bytes(N_B,'little')))
-sys.stdout.flush()
+  plaintext = sys.stdin.buffer.read(N_B)
+  keystr = step(keystr)
+  print(format(int.from_bytes(plaintext,'little') ^ keystr, 'b'))
+# sys.stdout.flush()

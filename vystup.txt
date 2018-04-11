@@ -1,0 +1,78 @@
+x = (x & 1) << N + 1 | x << 1 | x >> N - 1
+
+
+
+//----
+153
+1001 1001
+0000 0001 -> 0000 0001 -> 10 0000 0000 | 01 0011 0010 | 0000 0001
+
+
+vystup: 
+10 0000 0000
+01 0011 0010
+00 0000 0001
+
+vysledek:
+1 1001 1001 1
+
+//----
+129
+1000 0001
+1000000000
+100000010
+1
+1 1000 0001 1
+
+//-----
+128
+1000 000
+0
+100000000
+1
+0 1000 0000 1
+
+
+//-----
+65
+0100 0001
+1000000000
+10000010
+0
+1 0100 0001 0
+
+
+jednicka na na konci puvodniho pridava jednicku na zacatek po shiftu ->
+jednicka na zacatku prida 1 na konec po shiftu
+
+
+
+
+
+
+
+
+prostredni cast ma N+1
+
+
+1)
+pokud je na konci 1, tak se objevi uplne vlevo -> pokud je tedy ve vysledku uplne vlevo, vim ze byla na konci
+XXXX XXX1
+
+2)
+pokud je uplne vlevo 1, tak se objevi predposledni druha zleva -> pokud je tedy ve vysledku druha zleva, vim ze byla vlevo
+
+1XXX XXX1
+
+
+1. cast
+
+
+--------------------
+2. cast
+01 0011 0010 -> x >> 1 -> 1001 1001 - OK
+
+
+----------------------
+3. cast
+0000 0001 -> x << N-1 -> 1000 000 - NE
