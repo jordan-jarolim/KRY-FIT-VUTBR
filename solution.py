@@ -77,24 +77,20 @@ def choose_best(base_list):
     for option in base_list:
         if (option & (3 << 256) == (option & 3) << 256):
             final = option
-            break;
+            break
     return final
 
 # Shift selected option (reverse to 1st step operation)
 def shift_chosen(chosen):
-    print(chosen.bit_length())
-    print(format(chosen, 'b'))
-    # if (length > 257):
-    #     length = 257
-    # chosen = (int(bin(chosen)[-257:], 2)) >> 1
     chosen = chosen >> 1
     if (chosen.bit_length() >= 257):
         chosen = int(bin(chosen)[-256:], 2)
+
     return chosen
 
 # Tranform int to string
 def int_to_string(shifted):
-    return int.to_bytes(shifted, 32, 'little').decode('utf-8')
+    return int.to_bytes(shifted, 32, 'little').strip().decode('ascii')
 
 
 # Reverse ste function    
@@ -102,7 +98,7 @@ def reverseStep(y):
     x = int.to_bytes(y, 32, 'little')
     final_str = []
     j = 0
-    i = 0;
+    i = 0
     for byte in x:
         candidate_list = -1
         for bit in iterate_bits(byte):
@@ -123,78 +119,63 @@ def reverseStep(y):
 
     chosen = choose_best(base_list)
     shifted = shift_chosen(chosen)
-    # stringified = int_to_string(shifted)
     return shifted
             
 
+# Open files
+file = open(os.path.join('in/', "bis.txt"), "rb")
+plain = file.read()
+file.close()
 
-print('step')
-original = int.from_bytes('KRY{qwertzuiopasdfghjklyxcvb}'.encode(),'little')
+file = open(os.path.join('in/', "bis.txt.enc"), "rb")
+cipher = file.read()
+file.close()
 
-for i in range(N//2):
-    original = step(original)
+# Xor them
+keystream = bytes([a ^ b for (a, b) in zip(plain, cipher)])
 
-original = step(original)
+first_block = keystream[:N_B]
+keystr = int.from_bytes(first_block, 'little')
 
-print('vysledek')
-print(format(original, 'b'))
-print(original)
+# inverse key stream
+for i in range(N // 2):
+    keystr = reverseStep(keystr)
 
-print('reversed')
-final = 53732762364271725616554037660579309881140189147263019822410701712482392295930
-
-for i in range(N//2):
-    final = reverseStep(final)
-
-final = reverseStep(final)
-
-print(int_to_string(final))
+print(int_to_string(keystr))
 
 
-# file = open(os.path.join('in/', "bis.txt"), "r")
-# original = file.read()
-# file.close()
 
-# file = open(os.path.join('in/', "bis.txt.enc"), "r")
-# enc = file.read()
-# file.close()
+# test-------
 
-# print(format(int.from_bytes(enc.encode(), 'little'), 'b'))
+# print('step')
+# original = int.from_bytes('KRY{@wertzuio!asdfghjkly/cvb}'.encode(),'little')
 
-# original = int.from_bytes(original.encode(), 'little')
+# for i in range(N//2):
+#     original = step(original)
+
+# print('vysledek')
 # print(format(original, 'b'))
-# enc = int.from_bytes(enc.encode(), 'little')
+# print(original)
 
-# result = enc ^ original
-# print (format(result, 'b'))
-
-# for i in range(N//2):
-#     result = reverseStep(result)
-
-# result = reverseStep(result)
-# print(int_to_string(result))
-
-
-
-
-
-
-# final = [int.to_bytes(e, 32, 'little') for e in final]
-# print (final)
-# for byte in final:
-    # print(int.from_bytes(byte.encode(), 'little'))
-    # print(format(chr(byte), '08b'))
-# print(''.join(final), '032b')
-
-# # Keystream init
-# keystr = int.from_bytes(args.key.encode(),'little')
+# print('reversed')
+# final = original
 
 # for i in range(N//2):
-#   keystr = step(keystr)
+#     final = reverseStep(final)
 
-#   # Encrypt/decrypt stdin2stdout 
-#   plaintext = sys.stdin.buffer.read(N_B)
-#   keystr = step(keystr)
-#   print(binascii.hexlify((int.from_bytes(plaintext,'little') ^ keystr).to_bytes(N_B,'little')))
+# print(final.bit_length())
+# print(int_to_string(final))
 
-# sys.stdout.flush()
+
+
+
+
+
+
+
+
+
+
+
+
+
