@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-
+import sys
 
 # parser = argparse.ArgumentParser()
 # parser.add_argument("key")
@@ -137,7 +137,8 @@ keystr = int.from_bytes(first_block, 'little')
 for i in range(N // 2):
     keystr = reverseStep(keystr)
 
-print(int_to_string(keystr))
+sys.stdout.write(int_to_string(keystr))
+# print(int_to_string(keystr))
 
 
 
